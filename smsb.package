@@ -1,0 +1,5 @@
+[smsb]
+	revision = 1
+	title = "SMSb"
+	role = rss
+	files = "www/modules/smsb/"
