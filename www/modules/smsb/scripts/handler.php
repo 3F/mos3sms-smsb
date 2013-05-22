@@ -29,18 +29,71 @@ defined('MODROOT') or die('break');
 class Smsb
 {
     /**
-     * main entry
-     * TODO: ...
+     * main settings
+     * @var array
      */
-    public function output()
+    private $_config = null;
+    
+    public function __construct()
     {
-        // testing...
-        
+        $this->_config = System::getSettings();
+    }
+    
+    /**
+     * viewing page
+     * @param mixed $level
+     * @return string
+     * @throws \Exception
+     */
+    public function output($level)
+    {
+        switch($level){
+            case $this->_config['levels']['main']:{
+                return $this->_levelMain();
+            }
+            case $this->_config['levels']['captcha']:{ 
+                return $this->_levelCaptcha();
+            }
+            case $this->_config['levels']['status']:{
+                return $this->_levelStatus();
+            }
+        }
+        throw new \Exception('not supported level');
+    }
+    
+    protected function _levelMain()
+    {
         $view = System::openView('main');
 
-        $key = new Keyboard();
-        $keys = $key->prepareKeyboard(Keyboard::CASE_UPPER, 'rus');
+        $key            = new Keyboard();
+        $keysRus        = $key->prepareKeyboard(Keyboard::CASE_LOWER, 'rus');
+        $keysEng        = $key->prepareKeyboard(Keyboard::CASE_LOWER, 'eng');
+        $keysUpperRus   = $key->prepareKeyboard(Keyboard::CASE_UPPER, 'rus');
+        $keysUpperEng   = $key->prepareKeyboard(Keyboard::CASE_UPPER, 'eng');
 
-        echo str_replace(array('%localImage%', '%keysRus%', '%keysEng%'), array(MODROOT . '/view/images', $keys, $keys), $view);
+        return str_replace(array(
+                            '%localImage%',
+                            '%keysRus%',
+                            '%keysEng%',
+                            '%keysUpperRus%',
+                            '%keysUpperEng%',
+                        ),
+                        array(
+                            MODROOT . '/view/images',
+                            $keysRus,
+                            $keysEng,
+                            $keysUpperRus,
+                            $keysUpperEng,
+                        ), $view);
+    }
+    
+    protected function _levelCaptcha(&$data)
+    {
+        //TODO:
+    }
+    
+    protected function _levelStatus()
+    {
+        //TODO:
     }
 }

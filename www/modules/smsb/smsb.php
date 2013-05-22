@@ -30,4 +30,4 @@ define('MODROOT', realpath(dirname(__FILE__)));
 require_once MODROOT . '/scripts/bootstrap.php';
 
 $sms = new Smsb();
-$sms->output();
+echo $sms->output( System::getLevel() );

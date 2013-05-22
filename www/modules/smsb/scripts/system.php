@@ -71,12 +71,12 @@ final class System
      */
     public static function getLevel()
     {
-        if(!isset(self::$_config['levels']['list'])){
+        if(!isset(self::$_config['levels']['main'])){
             throw new \Exception('settings is not correct');
         }
         
         if(!isset($_REQUEST['lev'])){
-            return self::$_config['levels']['list'];
+            return self::$_config['levels']['main'];
         }
         return $_REQUEST['lev'];
     }

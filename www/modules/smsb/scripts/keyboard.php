@@ -72,7 +72,7 @@ class Keyboard
                 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.', '-', '_', ':', '|', '~', '\\"'
             ),
             array(
-                '(', ')', '@', '*', '{', '}', '\\\\', '/', '=', '&', "'", ' ', Keyboard::CMD_SWITCH, Keyboard::CMD_CAPS, Keyboard::CMD_BACKSPACE, Keyboard::CMD_SEND
+                '(', ')', '@', '*', '{', '}', '\\\\', '/', '=', '&', "'", ' ', Keyboard::CMD_BACKSPACE, Keyboard::CMD_CAPS, Keyboard::CMD_SWITCH, Keyboard::CMD_SEND
             ),
         ),
 
@@ -105,7 +105,7 @@ class Keyboard
                 'z', 'x', 'c', 'v', 'b', 'n', 'm', ' ', ' ', '.', '-', '_', ':', '|', '~', '\\"'
             ),
             array(
-                '(', ')', '@', '*', '{', '}', '\\\\', '/', '=', '&', "'", ' ', Keyboard::CMD_SWITCH, Keyboard::CMD_CAPS, Keyboard::CMD_BACKSPACE, Keyboard::CMD_SEND
+                '(', ')', '@', '*', '{', '}', '\\\\', '/', '=', '&', "'", ' ', Keyboard::CMD_BACKSPACE, Keyboard::CMD_CAPS, Keyboard::CMD_SWITCH, Keyboard::CMD_SEND
             ),
         ),
     );
