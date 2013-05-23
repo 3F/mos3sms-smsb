@@ -108,16 +108,21 @@ class Keyboard
                 '(', ')', '@', '*', '{', '}', '\\\\', '/', '=', '&', "'", ' ', Keyboard::CMD_BACKSPACE, Keyboard::CMD_CAPS, Keyboard::CMD_SWITCH, Keyboard::CMD_SEND
             ),
         ),
+        
+        'digit' => array(
+            array('1', '2', '3', '4', '5', Keyboard::CMD_BACKSPACE),
+            array('6', '7', '8', '9', '0', Keyboard::CMD_SEND),
+        ),
     );
 
 
     /**
      * prepare keyboard for moservice
-     * @param Keyboard $case
      * @param string $type  - type definition keyboard
+     * @param Keyboard $case
      * @return string
      */
-    public function prepareKeyboard($case = Keyboard::CASE_LOWER, $type = 'rus')
+    public function prepareKeyboard($type = 'rus', $case = Keyboard::CASE_LOWER)
     {
         return $this->_transformToMos($this->_keys($type, $case));
     }

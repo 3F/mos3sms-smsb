@@ -52,7 +52,7 @@ class Smsb
                 return $this->_levelMain();
             }
             case $this->_config['levels']['captcha']:{ 
-                return $this->_levelCaptcha();
+                return $this->_levelCaptcha(System::getParam('phone'), System::getParam('msg'));
             }
             case $this->_config['levels']['status']:{
                 return $this->_levelStatus();
@@ -66,10 +66,10 @@ class Smsb
         $view = System::openView('main');
 
         $key            = new Keyboard();
-        $keysRus        = $key->prepareKeyboard(Keyboard::CASE_LOWER, 'rus');
-        $keysEng        = $key->prepareKeyboard(Keyboard::CASE_LOWER, 'eng');
-        $keysUpperRus   = $key->prepareKeyboard(Keyboard::CASE_UPPER, 'rus');
-        $keysUpperEng   = $key->prepareKeyboard(Keyboard::CASE_UPPER, 'eng');
+        $keysRus        = $key->prepareKeyboard('rus', Keyboard::CASE_LOWER);
+        $keysEng        = $key->prepareKeyboard('eng', Keyboard::CASE_LOWER);
+        $keysUpperRus   = $key->prepareKeyboard('rus', Keyboard::CASE_UPPER);
+        $keysUpperEng   = $key->prepareKeyboard('eng', Keyboard::CASE_UPPER);
 
         return str_replace(array(
                             '%localImage%',
@@ -87,13 +87,40 @@ class Smsb
                         ), $view);
     }
     
-    protected function _levelCaptcha(&$data)
+    protected function _levelCaptcha($phone, $msg)
+    {
+        $remote = new Remote();
+        $remote->request($this->_config['providers']['beeline']['resource']); //init session
+        $gif =  $remote->request($this->_captchaUrl()); // getting captcha image
+        
+        $captcha = $this->_config['images']['captcha'] . '/smsb_captcha.gif';
+        file_put_contents($captcha, $gif);
+        
+        $view   = System::openView('captcha');
+        $key    = new Keyboard();
+        return str_replace(array(
+                            '%localImage%',
+                            '%keysDigit%',
+                            '%phone%',
+                            '%message%',
+                            '%captcha%',
+                        ),
+                        array(
+                            MODROOT . '/view/images',
+                            $key->prepareKeyboard('digit'),
+                            $phone,
+                            $msg,
+                            $captcha,
+                        ), $view);
+    }
+    
+    protected function _levelStatus($code, $phone, $msg)
     {
         //TODO:
     }
     
-    protected function _levelStatus()
+    protected function _captchaUrl()
     {
-        //TODO:
+        return $this->_config['providers']['beeline']['captcha'] . '&r=' . (mt_rand() / mt_getrandmax());
     }
 }

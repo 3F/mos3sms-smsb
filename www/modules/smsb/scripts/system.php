@@ -55,29 +55,33 @@ final class System
     }
     
     /**
-     * Receive data
-     * Quickly realisation... for detailed transfer please overload method
-     * @param string $url
-     * @return string|false
-     */
-    public static function loadFromUrl($url)
-    {
-        return file_get_contents($url);
-    }
-    /**
      * Requested RSS pages
      * @return mixed
      * @throws \Exception
      */
     public static function getLevel()
     {
-        if(!isset(self::$_config['levels']['main'])){
-            throw new \Exception('settings is not correct');
+        try{
+            return self::getParam('lev');
         }
-        
-        if(!isset($_REQUEST['lev'])){
+        catch(\Exception $e){
+            if(!isset(self::$_config['levels']['main'])){
+                throw new \Exception('settings is not correct');
+            }
             return self::$_config['levels']['main'];
         }
-        return $_REQUEST['lev'];
+    }
+    
+    public static function getMosUrl($level)
+    {
+        return 'http://127.0.0.1/?page=rss_smsb&amp;lev=' . $level;
+    }
+    
+    public static function getParam($ident)
+    {
+        if(!isset($_REQUEST[$ident])){
+            throw new \Exception("Undefined param '" . $ident . "'");
+        }
+        return stripcslashes(urldecode($_REQUEST[$ident]));
     }
 }

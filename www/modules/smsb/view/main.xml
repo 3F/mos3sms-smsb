@@ -64,6 +64,7 @@
         rowCount            = "5"        
         columnCount         = "16"
         backgroundColor     = "236:240:212"
+        sideColorBottom     = "236:240:212"
         imageBorderColor    = "236:240:212"
         itemBackgroundColor = "236:240:212"
         centerXPC           = "2"

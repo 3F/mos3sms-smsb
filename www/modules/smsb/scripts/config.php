@@ -31,7 +31,8 @@ return array(
         'path'  => MODROOT . '/view',
     ),
     'images'    => array(
-        'path'  => MODROOT . '/view/images',
+        'path'      => MODROOT . '/view/images',
+        'captcha'   => '/tmp',
     ),
     'levels'    =>  array(
         'main'      => 0,
@@ -40,7 +41,8 @@ return array(
     ),
     'providers' => array(
         'beeline'   => array(
-            'resource'  => '',
+            'resource'  => 'https://www.beeline.ru/sms/index.wbp',
+            'captcha'   => 'https://www.beeline.ru/mamimg.aspx?width=120&height=30',
         ),
     ),
 );

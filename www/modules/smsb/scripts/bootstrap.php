@@ -43,6 +43,7 @@ date_default_timezone_set('Europe/Moscow');
  */
 require_once MODROOT . '/scripts/system.php';
 require_once MODROOT . '/scripts/keyboard.php';
+require_once MODROOT . '/scripts/network.php';
 require_once MODROOT . '/scripts/handler.php';
 
 /**
