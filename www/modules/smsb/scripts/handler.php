@@ -77,6 +77,7 @@ class Smsb
                             '%keysEng%',
                             '%keysUpperRus%',
                             '%keysUpperEng%',
+                            '%maxLen%',
                         ),
                         array(
                             MODROOT . '/view/images',
@@ -84,6 +85,7 @@ class Smsb
                             $keysEng,
                             $keysUpperRus,
                             $keysUpperEng,
+                            $this->_config['providers']['beeline']['maxLen'],
                         ), $view);
     }
     

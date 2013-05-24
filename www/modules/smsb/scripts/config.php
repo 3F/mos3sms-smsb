@@ -43,6 +43,7 @@ return array(
         'beeline'   => array(
             'resource'  => 'https://www.beeline.ru/sms/index.wbp',
             'captcha'   => 'https://www.beeline.ru/mamimg.aspx?width=120&height=30',
+            'maxLen'    => 160,
         ),
     ),
 );

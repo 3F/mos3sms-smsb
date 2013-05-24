@@ -79,14 +79,15 @@
             
             /* exit */
             if(userInput == "ENTR" || userInput == "enter"){
-                /*postMessage("return"); - back to previous page */
-                postMessage("home");
+                postMessage("return");
+                postMessage("return");
+                postMessage("return");
+                /*
                 postMessage("guide");
-                /* - */
                 postMessage("enter");
-                postMessage("ENTR");
+                */
             }
-        </onUserInput>        
+        </onUserInput>
         
         <!-- system progress -->
 	<idleImage> image/POPUP_LOADING_01.png </idleImage>

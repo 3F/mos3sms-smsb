@@ -46,7 +46,7 @@
         inputPhoneBuffer    = null; /* support backspace */
         inputMessage        = '';
         inputMessageCount   = 0;
-        inputMessageMax     = 140;
+        inputMessageMax     = %maxLen%;
         inputMessageBuffer  = null; /* support backspace */
         
         /* default */
@@ -178,7 +178,7 @@
                 </script>
             </image>
             <!-- active field -->
-            <text redraw="yes" align="left" lines="4" offsetXPC="21" offsetYPC="25" widthPC="48" heightPC="22" fontSize="16">
+            <text redraw="yes" align="left" lines="5" offsetXPC="21" offsetYPC="25" widthPC="48" heightPC="22" fontSize="16">
                 <script>
                     out = inputMessage;
                     if(isMessageFocus != 0){
