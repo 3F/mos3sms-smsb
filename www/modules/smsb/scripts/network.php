@@ -27,18 +27,18 @@ namespace reg\plugin\mos3\smsb;
 defined('MODROOT') or die('break');
 
 
-class Remote 
+class Remote
 {
-    /**
-     * last cookies received 
-     * @var array
-     */
-    private $_cookies   = array();
     /**
      * last response headers
      * @var array
      */
     private $_headers   = array();
+    /**
+     * raw cookies string to send
+     * @var string
+     */
+    private $_cookies   = null;
     
     /**
      * retreive response
@@ -52,25 +52,29 @@ class Remote
                 'method' => 'GET',
                 'header' => 
                     'Referer: '. $url ."\r\n" .
-                    $this->cookies(true),
+                    $this->_cookies(),
             ),
         )));
     }
     
     /**
-     * getting cookies
-     * @param boolean $format - returns header format if true
-     * @return mixed
+     * @return string
      */
-    public function cookies($format = false)
+    public function getCookiesRaw()
     {
-        if($format){
-            if(count($this->_cookies) < 1){
-                return '';
-            }
-            return 'Cookie: ' . implode('; ', $this->_cookies) . "\r\n";
+        $cookies = $this->_foundCookies($this->_headers);
+        if(count($cookies) < 1){
+            return null;
         }
-        return $this->_cookies;
+        return implode('; ', $cookies);
+    }
+    
+    /**
+     * @param string $cookies
+     */
+    public function setCookiesRaw($cookies)
+    {
+        $this->_cookies = $cookies;
     }
     
     /**
@@ -87,12 +91,16 @@ class Remote
                 'header' => 
                     'Referer: '. $url ."\r\n" .
                     "Content-type: application/x-www-form-urlencoded\r\n" .
-                    $this->cookies(true),
+                    $this->_cookies(),
                 'content' => $data->param(),
             ),
         )));
     }
     
+    /**
+     * @param array $headers
+     * @return array
+     */
     protected function _foundCookies(&$headers)
     {
         $cookies = array();
@@ -108,8 +116,15 @@ class Remote
     {
         $content        = file_get_contents($url, false, $context);
         $this->_headers = $http_response_header; // PHP variable, see manual
-        $this->_cookies = $this->_foundCookies($this->_headers);
         return $content;
+    }
+    
+    protected function _cookies()
+    {
+        if($this->_cookies != null){
+            return 'Cookie: ' . $this->_cookies . "\r\n";
+        }
+        return '';
     }
 }
 

@@ -72,16 +72,46 @@ final class System
         }
     }
     
-    public static function getMosUrl($level)
-    {
-        return 'http://127.0.0.1/?page=rss_smsb&amp;lev=' . $level;
-    }
-    
     public static function getParam($ident)
     {
         if(!isset($_REQUEST[$ident])){
             throw new \Exception("Undefined param '" . $ident . "'");
         }
         return stripcslashes(urldecode($_REQUEST[$ident]));
+    }
+    
+    public static function sharedGet($ident)
+    {
+        self::_sessionInit();
+        if(!isset($_SESSION[$ident])){
+            throw new \Exception('not found object ' . $ident);
+        }
+        return $_SESSION[$ident];
+    }
+    
+    public static function sharedSet($value, $ident)
+    {
+        self::_sessionInit();
+        $_SESSION[$ident] = $value;
+    }
+    
+    public static function sharedFlush()
+    {
+        $id = session_id();
+        if(!empty($id) && !session_destroy()){
+//            throw new \Exception('');
+        }
+    }
+    
+    protected static function _sessionInit()
+    {
+        $id = session_id();
+        if(empty($id)){
+            session_id('SMSbShareVariableSID'); //require on stb
+            if(!session_start()){
+                throw new \Exception('initialization session failed');
+            }
+        }
+        return $id;
     }
 }

@@ -55,7 +55,7 @@ class Smsb
                 return $this->_levelCaptcha(System::getParam('phone'), System::getParam('msg'));
             }
             case $this->_config['levels']['status']:{
-                return $this->_levelStatus();
+                return $this->_levelStatus(System::getParam('vrfy'));
             }
         }
         throw new \Exception('not supported level');
@@ -89,12 +89,34 @@ class Smsb
     
     protected function _levelCaptcha($phone, $msg)
     {
-        $remote = new Remote();
-        $remote->request($this->_config['providers']['beeline']['resource']); //init session
+        $remote     = new Remote();
+        $content    = $remote->request($this->_config['providers']['beeline']['resource']);
+        $session    = $remote->getCookiesRaw();
+        
+        $remote->setCookiesRaw($session);               // for all request
         $gif =  $remote->request($this->_captchaUrl()); // getting captcha image
         
         $captcha = $this->_config['images']['captcha'] . '/smsb_captcha.gif';
         file_put_contents($captcha, $gif);
+        
+        try{
+            if(!preg_match("#afcode.+?value\s*=\s*['\"]?\s*([^'\"> ]+)#i", $content, $afcode)){
+                throw new \Exception();
+            }
+            unset($content);
+            
+            System::sharedFlush();
+            System::sharedSet($session, 'session');
+            System::sharedSet(array(
+                'phone'     => trim($phone),
+                'msg'       => trim($msg),
+                'afcode'    => $afcode[1],
+            ), 'send');
+            unset($afcode);
+        }
+        catch(\Exception $e){
+            return $this->_sentFailure();
+        }
         
         $view   = System::openView('captcha');
         $key    = new Keyboard();
@@ -114,13 +136,51 @@ class Smsb
                         ), $view);
     }
     
-    protected function _levelStatus($code, $phone, $msg)
+    protected function _levelStatus($code)
     {
-        //TODO:
+        try{
+            $send = System::sharedGet('send');
+
+            if(strlen($send['phone']) < 3){
+                throw new \Exception();
+            }
+
+            $remote = new Remote();
+            $remote->setCookiesRaw(System::sharedGet('session'));
+            $res = $remote->push(new RemoteParam(array(
+                'send'          => '',
+                'smstext'       => $send['msg'],
+                'afcode'        => $send['afcode'],
+                'smstoprefix'   => substr($send['phone'], 0, 3),
+                'smsto'         => substr($send['phone'], 3),
+                'dirtysmstext'  => $send['msg'],
+                'confirm_key'   => '',
+                'confirmcode'   => $code,
+                'x'             => mt_rand(1, 82),
+                'y'             => mt_rand(1, 18),
+            )), $this->_config['providers']['beeline']['resource']);
+            
+            //verify status - TODO:
+            if(preg_match("#btn.*?check#i", $res)){
+                return $this->_sentSuccess();
+            }
+        }
+        catch(\Exception $e){}
+        return $this->_sentFailure();
     }
     
     protected function _captchaUrl()
     {
         return $this->_config['providers']['beeline']['captcha'] . '&r=' . (mt_rand() / mt_getrandmax());
     }
+    
+    protected function _sentSuccess()
+    {
+        return str_replace('%status%', '1', System::openView('status'));
+    }
+    
+    protected function _sentFailure()
+    {
+        return str_replace('%status%', '0', System::openView('status'));
+    }    
 }

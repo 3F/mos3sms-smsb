@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+    * The MIT License (MIT)
+    * 
+    * Copyright (c) 2013 Developed by reg <entry.reg@gmail.com>
+    * 
+    * Permission is hereby granted, free of charge, to any person obtaining a copy
+    * of this software and associated documentation files (the "Software"), to deal
+    * in the Software without restriction, including without limitation the rights
+    * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the Software is
+    * furnished to do so, subject to the following conditions:
+    * 
+    * The above copyright notice and this permission notice shall be included in
+    * all copies or substantial portions of the Software.
+    * 
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    * THE SOFTWARE.
+ */
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    
+    <mediaDisplay
+        name                = "photoView"
+        backgroundColor     = "77:47:39"
+        sideColorBottom     = "77:47:39"
+        imageBorderColor    = "77:47:39"
+        itemBackgroundColor = "77:47:39"
+        centerXPC           = "2"
+        centerYPC           = "55"
+        centerHeightPC      = "50"
+        sideTopHeightPC     = "0"
+        bottomYPC           = "0"
+        showHeader          = "no"
+        showDefaultInfo     = "no"
+        itemOffsetXPC       = "20"
+        itemOffsetYPC       = "77"
+        itemGapXPC          = "0.8"
+        itemGapYPC          = "1.4"
+        itemWidthPC         = "5"
+        itemHeightPC        = "8"
+        drawItemText        = "no"
+        forceFocusOnItem    = "no"
+        sideBottomHeightPC  = "0"
+    >
+        <script>
+            isSuccess = %status%;
+        </script>
+
+        <text align="left" offsetXPC="18" offsetYPC="20" widthPC="60" heightPC="12" fontSize="22" foregroundColor="174:156:139">
+            <script>
+                if(isSuccess != 0){
+                    print("Сообщение отправлено");
+                }
+                else{
+                    print("Невозможно отправить сообщение");
+                }
+            </script>
+            <foregroundColor>
+                <script>
+                    if(isSuccess != 0){
+                        print("174:156:139");
+                    }
+                    else{
+                        print("174:156:139");
+                    }
+                </script>
+            </foregroundColor>
+        </text>
+        
+        <onUserInput>
+            userInput = currentUserInput();
+            
+            /* exit */
+            if(userInput == "ENTR" || userInput == "enter"){
+                /*postMessage("return"); - back to previous page */
+                postMessage("home");
+                postMessage("guide");
+                /* - */
+                postMessage("enter");
+                postMessage("ENTR");
+            }
+        </onUserInput>        
+        
+        <!-- system progress -->
+	<idleImage> image/POPUP_LOADING_01.png </idleImage>
+	<idleImage> image/POPUP_LOADING_02.png </idleImage>
+	<idleImage> image/POPUP_LOADING_03.png </idleImage>
+	<idleImage> image/POPUP_LOADING_04.png </idleImage>
+	<idleImage> image/POPUP_LOADING_05.png </idleImage>
+	<idleImage> image/POPUP_LOADING_06.png </idleImage>
+	<idleImage> image/POPUP_LOADING_07.png </idleImage>
+	<idleImage> image/POPUP_LOADING_08.png </idleImage>
+    </mediaDisplay>
+    
+</rss>

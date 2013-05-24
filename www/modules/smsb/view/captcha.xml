@@ -227,10 +227,7 @@
             if(char == "SND"){
                 /* executeScript("scriptSend"); */
                 showIdle();
-                url = "http://127.0.0.1/?page=rss_smsb&amp;lev=2&amp;"
-                    + "phone=" + urlEncode(inputPhone) 
-                    + "&amp;msg=" + urlEncode(inputMessage)
-                    + "&amp;vrfy=" + urlEncode(inputCode);
+                url = "http://127.0.0.1/?page=rss_smsb&amp;lev=2&amp;vrfy=" + urlEncode(inputCode);
                 doModalRss(url);
             }
         </scriptPutSystemChar>
