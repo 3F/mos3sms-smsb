@@ -29,11 +29,11 @@ defined('MODROOT') or die('break');
 /**
  * Debug option
  */
-error_reporting(E_ALL | E_STRICT);
-ini_set('display_errors',       'On');
-ini_set('log_errors',           'On');
-ini_set('log_errors_max_len',   256 * 1024);
-ini_set('error_log',            '/tmp/log/mos3_smsb.log');
+//error_reporting(E_ALL | E_STRICT);
+//ini_set('display_errors',       'On');
+//ini_set('log_errors',           'On');
+//ini_set('log_errors_max_len',   256 * 1024);
+//ini_set('error_log',            '/tmp/log/mos3_smsb.log');
 
 //enviroment
 date_default_timezone_set('Europe/Moscow');
