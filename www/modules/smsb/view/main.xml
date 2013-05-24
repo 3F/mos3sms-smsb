@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+    * The MIT License (MIT)
+    * 
+    * Copyright (c) 2013 Developed by reg <entry.reg@gmail.com>
+    * 
+    * Permission is hereby granted, free of charge, to any person obtaining a copy
+    * of this software and associated documentation files (the "Software"), to deal
+    * in the Software without restriction, including without limitation the rights
+    * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the Software is
+    * furnished to do so, subject to the following conditions:
+    * 
+    * The above copyright notice and this permission notice shall be included in
+    * all copies or substantial portions of the Software.
+    * 
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    * THE SOFTWARE.
+ */
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    
+    <script>
+        /* keyboard settings */
+        keyboard        = null; /* current */
+        keysCount       = 80;
+        keysRus         = "%keysRus%";
+        keysUpperRus    = "%keysUpperRus%";
+        keysEng         = "%keysEng%";
+        keysUpperEng    = "%keysUpperEng%";
+        
+        /* filed style */
+        fieldColorFocus     = "239:239:228";
+        fieldColorUnFocus   = "130:171:58";
+        
+        /* inputs */
+        inputPhone          = '';
+        inputPhoneCount     = 0;
+        inputPhoneMax       = 10;
+        inputPhoneBuffer    = null; /* support backspace */
+        inputMessage        = '';
+        inputMessageCount   = 0;
+        inputMessageMax     = %maxLen%;
+        inputMessageBuffer  = null; /* support backspace */
+        
+        /* default */
+        isMessageFocus      = 1; /* boolean flag */
+        keyboard            = keysRus;
+        keyboardType        = "rus";
+        keyboardCase        = "lower";
+        setFocusItemIndex(0);
+        cancelIdle();
+    </script>
+    
+    <mediaDisplay
+        name                = "photoView"
+        sliding             = "yes"
+        rowCount            = "5"        
+        columnCount         = "16"
+        backgroundColor     = "236:240:212"
+        sideColorBottom     = "236:240:212"
+        imageBorderColor    = "236:240:212"
+        itemBackgroundColor = "236:240:212"
+        centerXPC           = "2"
+        centerYPC           = "55"
+        centerHeightPC      = "50"
+        sideTopHeightPC     = "0"
+        bottomYPC           = "0"
+        showHeader          = "no"
+        showDefaultInfo     = "no"
+        itemOffsetXPC       = "6"
+        itemOffsetYPC       = "54"
+        itemGapXPC          = "0.8"
+        itemGapYPC          = "1.4"
+        itemWidthPC         = "4.6"
+        itemHeightPC        = "7"
+        rollItems           = "yes"
+        drawItemText        = "no"
+        forceFocusOnItem    = "no"
+        sideBottomHeightPC  = "0"
+	redraw              = "no"
+    >
+        
+        <!-- background image -->
+        <backgroundDisplay redraw="no">
+            <image redraw="no" offsetXPC="0" offsetYPC="0" widthPC="100" heightPC="100">
+                %localImage%/background.png
+            </image>
+        </backgroundDisplay>
+        
+        <!-- title -->
+        <image redraw="no" offsetXPC="20" offsetYPC="8" widthPC="12" heightPC="2">
+            %localImage%/label.png
+        </image>
+        <text redraw="no" offsetXPC="35" offsetYPC="6" widthPC="20" heightPC="4" fontSize="14" foregroundColor="201:206:172">
+            На номера beeline
+        </text>
+        <image redraw="no" offsetXPC="56" offsetYPC="8" widthPC="14" heightPC="2">
+            %localImage%/label.png
+        </image>
+        
+       <!-- switch image -->
+        <image redraw="no" offsetXPC="16" offsetYPC="21" widthPC="3" heightPC="3">
+            %localImage%/switch.png
+        </image>
+        
+        <!-- phone number -->
+            <!-- unfocus -->
+            <image redraw="yes" offsetXPC="20" offsetYPC="12" widthPC="50" heightPC="8">
+                <script>
+                    if(isMessageFocus != 0){
+                        print("%localImage%/field_phone.png");
+                    }
+                    else{
+                        print("");
+                    }
+                </script>            
+            </image>
+            <!-- focus -->
+            <image redraw="yes" offsetXPC="20" offsetYPC="12" widthPC="50" heightPC="8">
+                <script>
+                    if(isMessageFocus != 0){
+                        print("");
+                    }
+                    else{
+                        print("%localImage%/field_phone_focus.png");
+                    }
+                </script>
+            </image>
+            <!-- active field -->
+            <text redraw="yes" offsetXPC="22" offsetYPC="12" widthPC="40" heightPC="8" fontSize="16">
+                <script>
+                    out = "+7 " + inputPhone;
+                    if(isMessageFocus == 0){
+                        out += " _";
+                    }
+                    print(out);
+                </script>
+                <foregroundColor>
+                    <script>
+                        if(isMessageFocus != 0){
+                            print(fieldColorUnFocus);
+                        }
+                        else{
+                            print(fieldColorFocus);
+                        }
+                    </script>
+                </foregroundColor>
+            </text>
+            
+        <!-- message -->
+            <!-- unfocus -->
+            <image redraw="yes" offsetXPC="20" offsetYPC="24" widthPC="50" heightPC="24">
+                <script>
+                    if(isMessageFocus != 0){
+                        print("");
+                    }
+                    else{
+                        print("%localImage%/field_message.png");
+                    }
+                </script>            
+            </image>
+            <!-- focus -->
+            <image redraw="yes" offsetXPC="20" offsetYPC="24" widthPC="50" heightPC="24">
+                <script>
+                    if(isMessageFocus != 0){
+                        print("%localImage%/field_message_focus.png");
+                    }
+                    else{
+                        print("");
+                    }
+                </script>
+            </image>
+            <!-- active field -->
+            <text redraw="yes" align="left" lines="5" offsetXPC="21" offsetYPC="25" widthPC="48" heightPC="22" fontSize="16">
+                <script>
+                    out = inputMessage;
+                    if(isMessageFocus != 0){
+                        out += " _";
+                    }
+                    print(out);
+                </script>
+                <foregroundColor>
+                    <script>
+                        if(isMessageFocus != 0){
+                            print(fieldColorFocus);
+                        }
+                        else{
+                            print(fieldColorUnFocus);
+                        }
+                    </script>
+                </foregroundColor>
+            </text>
+            
+        <!-- count of symbols -->
+        <text redraw="yes" offsetXPC="65" offsetYPC="48" widthPC="15" heightPC="6" fontSize="12" backgroundColor="235:239:211" foregroundColor="109:114:80">
+            <script>sprintf("%s / ", inputMessageCount) + inputMessageMax;</script>
+        </text>
+        
+        <!-- keys -->
+        <itemDisplay redraw="no">
+            <script>
+                idx     = getQueryItemIndex();
+                focus   = getFocusItemIndex();
+                key     = getStringArrayAt(keyboard, idx);
+                
+                /*  */
+                if(focus == idx){
+                    bgColor = "216:220:189";
+                    color   = fieldColorUnFocus;
+                }
+                else{
+                    bgColor = "177:181:150";
+                    color   = fieldColorFocus;
+                }
+                
+                /* system key */
+                if(key == "CHG" || key == "CPS" || key == "BSP" || key == "SND"){
+                    color = bgColor;
+                }
+            </script>
+            
+            <!-- simple keys style -->
+            <text redraw="no" align="center" offsetXPC="0" offsetYPC="0" widthPC="100" heightPC="100" fontSize="22">
+                <script> getStringArrayAt(keyboard, idx); </script>
+                <foregroundColor><script> print(color); </script></foregroundColor>
+                <backgroundColor><script> print(bgColor); </script></backgroundColor>
+            </text>
+            
+            <!-- control keys style -->
+                <!-- switch keyboard -->
+                <image redraw="no" offsetXPC="8" offsetYPC="7" widthPC="92" heightPC="85">
+                    <script>
+                        if(key == "CHG"){
+                            print("%localImage%/keyboard.png");
+                        }
+                        else{
+                            print("");
+                        }
+                    </script>
+                </image>
+                <!-- caps lock -->
+                <image redraw="no" offsetXPC="6" offsetYPC="6" widthPC="94" heightPC="94">
+                    <script>
+                        if(key == "CPS"){
+                            print("%localImage%/uppercase.png");
+                        }
+                        else{
+                            print("");
+                        }
+                    </script>
+                </image>
+                <!-- backspace -->
+                <image redraw="no" offsetXPC="0" offsetYPC="7" widthPC="100" heightPC="93">
+                    <script>
+                        if(key == "BSP"){
+                            print("%localImage%/backspace.png");
+                        }
+                        else{
+                            print("");
+                        }
+                    </script>
+                </image>
+                <!-- send message -->
+                <image redraw="no" offsetXPC="2" offsetYPC="2" widthPC="98" heightPC="98">
+                    <script>
+                        if(key == "SND"){
+                            print("%localImage%/send.png");
+                        }
+                        else{
+                            print("");
+                        }
+                    </script>
+                </image>
+        </itemDisplay>
+        
+        <!-- key handler -->
+        <onUserInput>
+            userInput = currentUserInput();
+            
+            /* switch field */
+            if(userInput == "PGDN" || userInput == "pagedown"){
+                isMessageFocus = 1;
+            }
+            if(userInput == "PGUP" || userInput == "pageup"){
+                isMessageFocus = 0;
+            }
+            
+            /* place char */
+            if(userInput == "ENTR" || userInput == "enter"){
+                char = getStringArrayAt(keyboard, getQueryItemIndex());
+                if(char == "CHG" || char == "CPS" || char == "BSP" || char == "SND"){
+                    executeScript("scriptPutSystemChar");
+                    /* достал уже этот кособокий скриптинг! */
+                }
+                else{
+                    executeScript("scriptPutChar");
+                }
+            }
+            
+            /* backspace */
+            if(userInput == "video_stop"){
+                executeScript("scriptBackspace");
+            }
+        </onUserInput>
+
+        
+        <!-- system progress -->
+	<idleImage> image/POPUP_LOADING_01.png </idleImage>
+	<idleImage> image/POPUP_LOADING_02.png </idleImage>
+	<idleImage> image/POPUP_LOADING_03.png </idleImage>
+	<idleImage> image/POPUP_LOADING_04.png </idleImage>
+	<idleImage> image/POPUP_LOADING_05.png </idleImage>
+	<idleImage> image/POPUP_LOADING_06.png </idleImage>
+	<idleImage> image/POPUP_LOADING_07.png </idleImage>
+	<idleImage> image/POPUP_LOADING_08.png </idleImage>
+    </mediaDisplay>
+    
+    <!-- ^user scripts -->
+        <scriptBackspace>
+            i = 0;
+            if(isMessageFocus != 0){
+                if(inputMessageCount &gt; 0){
+                    inputMessageCount   -= 1;
+                    inputMessageBuffer  = deleteStringArrayAt(inputMessageBuffer, inputMessageCount);
+                    inputMessage = "";
+                    while(i &lt; inputMessageCount){
+                        inputMessage += getStringArrayAt(inputMessageBuffer, i);
+                        i += 1;
+                    }
+                }
+            }
+            else{
+                if(inputPhoneCount &gt; 0){
+                    inputPhoneCount   -= 1;
+                    inputPhoneBuffer  = deleteStringArrayAt(inputPhoneBuffer, inputPhoneCount);
+                    inputPhone = "";
+                    while(i &lt; inputPhoneCount){
+                        inputPhone += getStringArrayAt(inputPhoneBuffer, i);
+                        i += 1;
+                    }
+                }
+            }
+            redrawDisplay(); /* slowly */
+        </scriptBackspace>
+        
+        <scriptPutChar>
+            if(isMessageFocus != 0){
+                if(inputMessageCount &lt; inputMessageMax){
+                    inputMessage        += char;
+                    inputMessageCount   += 1;
+                    inputMessageBuffer  = pushBackStringArray(inputMessageBuffer, char);
+                }
+            }
+            else{
+                if(inputPhoneCount &lt; inputPhoneMax){
+                    if(char == "0" || char == "1" || char == "2" || char == "3" || char == "4" || 
+                       char == "5" || char == "6" || char == "7" || char == "8" || char == "9"){ /* ;( */
+                        inputPhone          += char;
+                        inputPhoneCount     += 1;
+                        inputPhoneBuffer    = pushBackStringArray(inputPhoneBuffer, char);
+                    }
+                }
+            }
+        </scriptPutChar>
+        
+        <scriptPutSystemChar>
+            char = getStringArrayAt(keyboard, getQueryItemIndex());
+            if(char == "CHG"){
+                executeScript("scriptKeyboardChange");
+            }
+            if(char == "CPS"){
+                executeScript("scriptCaseSwitch");
+            }
+            if(char == "BSP"){
+                executeScript("scriptBackspace");
+            }
+            if(char == "SND"){
+                /* executeScript("scriptSend"); */
+                showIdle();
+                url = "http://127.0.0.1/?page=rss_smsb&amp;lev=1&amp;"
+                    + "phone=" + urlEncode(inputPhone) + "&amp;msg=" + urlEncode(inputMessage);
+                doModalRss(url);
+            }
+        </scriptPutSystemChar>
+        
+        <scriptKeyboardChange>
+            if(keyboardType == "rus"){
+                keyboard        = keysEng;
+                keyboardType    = "eng";
+            }
+            else{
+                keyboard        = keysRus;
+                keyboardType    = "rus";
+            }
+            redrawDisplay();
+        </scriptKeyboardChange>
+        
+        <scriptCaseSwitch>
+            if(keyboardType == "rus"){
+                if(keyboardCase == "lower"){
+                    keyboard        = keysUpperRus;
+                    keyboardCase    = "upper";
+                }
+                else{
+                    keyboard        = keysRus;
+                    keyboardCase    = "lower";
+                }
+            }
+            else{
+                if(keyboardCase == "lower"){
+                    keyboard        = keysUpperEng;
+                    keyboardCase    = "upper";
+                }
+                else{
+                    keyboard        = keysEng;
+                    keyboardCase    = "lower";
+                }
+            }
+            redrawDisplay();
+        </scriptCaseSwitch>        
+
+<!--
+    slowly!  - - - - - 
+    <item_template>   |
+        <link>        |
+            <script> <
+                char = getStringArrayAt(keyboard, getQueryItemIndex());
+                if(char == "SND"){
+                   "urls" + urlEncode(inputMessage);
+                }
+                else{
+                  null;
+                }
+            </script>
+        </link>
+    </item_template>
+-->
+    
+    <channel redraw="no">
+        <!--
+        <item>
+            <link><script></script></link>
+        </item>
+        -->
+        <!-- to rendering process -->
+        <itemSize>
+            <script> print(keysCount); </script>
+        </itemSize>
+    </channel>
+</rss>

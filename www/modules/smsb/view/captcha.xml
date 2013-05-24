@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+    * The MIT License (MIT)
+    * 
+    * Copyright (c) 2013 Developed by reg <entry.reg@gmail.com>
+    * 
+    * Permission is hereby granted, free of charge, to any person obtaining a copy
+    * of this software and associated documentation files (the "Software"), to deal
+    * in the Software without restriction, including without limitation the rights
+    * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    * copies of the Software, and to permit persons to whom the Software is
+    * furnished to do so, subject to the following conditions:
+    * 
+    * The above copyright notice and this permission notice shall be included in
+    * all copies or substantial portions of the Software.
+    * 
+    * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    * THE SOFTWARE.
+ */
+-->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    
+    <script>
+        /* keyboard settings */
+        keyboard        = null; /* current */
+        keysCount       = 12;
+        keysDigit       = "%keysDigit%";
+        
+        /* inputs */
+        inputCode          = '';
+        inputCodeCount     = 0;
+        inputCodeBuffer    = null; /* support backspace */
+        
+        /* default */
+        keyboard            = keysDigit;
+        inputPhone          = "%phone%";
+        inputMessage        = "%message%";
+        setFocusItemIndex(0);
+        cancelIdle();
+    </script>
+    
+    <mediaDisplay
+        name                = "photoView"
+        sliding             = "yes"
+        rowCount            = "2"        
+        columnCount         = "6"
+        backgroundColor     = "77:47:39"
+        sideColorBottom     = "77:47:39"
+        imageBorderColor    = "77:47:39"
+        itemBackgroundColor = "77:47:39"
+        centerXPC           = "2"
+        centerYPC           = "55"
+        centerHeightPC      = "50"
+        sideTopHeightPC     = "0"
+        bottomYPC           = "0"
+        showHeader          = "no"
+        showDefaultInfo     = "no"
+        itemOffsetXPC       = "20"
+        itemOffsetYPC       = "77"
+        itemGapXPC          = "0.8"
+        itemGapYPC          = "1.4"
+        itemWidthPC         = "5"
+        itemHeightPC        = "8"
+        rollItems           = "yes"
+        drawItemText        = "no"
+        forceFocusOnItem    = "no"
+        sideBottomHeightPC  = "0"
+	redraw              = "no"
+    >
+        
+        <!-- envelope -->
+        <image offsetXPC="16" offsetYPC="7" widthPC="65" heightPC="67">
+            %localImage%/verify.png
+        </image>
+        
+        <!-- phone title -->
+        <text offsetXPC="23" offsetYPC="10" widthPC="40" heightPC="4" fontSize="16"  foregroundColor="75:56:52">
+            <script>
+                print("Кому: +7 " + inputPhone);
+            </script>
+        </text>
+        
+        <!-- message -->
+        <text lines="4" offsetXPC="23" offsetYPC="16" widthPC="57" heightPC="21" fontSize="16" foregroundColor="75:56:52">
+            <script>
+                print(inputMessage);
+            </script>
+        </text>
+        
+        <!-- captcha -->
+        <image redraw="yes" offsetXPC="36" offsetYPC="58" widthPC="24" heightPC="13">
+            %captcha%
+        </image>
+        
+        <!-- code input -->
+        <text redraw="yes" align="left" offsetXPC="57" offsetYPC="78" widthPC="25" heightPC="8" fontSize="17" foregroundColor="174:156:139">
+            Проверочный код:
+        </text>        
+        <text redraw="yes" align="left" offsetXPC="58" offsetYPC="86" widthPC="30" heightPC="10" fontSize="18" backgroundColor="77:47:39" foregroundColor="227:222:210">
+            <script>
+                print(inputCode + " _");
+            </script>
+        </text>
+        
+        
+        <!-- keys -->
+        <itemDisplay redraw="no">
+            <script>
+                idx     = getQueryItemIndex();
+                focus   = getFocusItemIndex();
+                key     = getStringArrayAt(keyboard, idx);
+                
+                /*  */
+                if(focus == idx){
+                    bgColor = "242:240:234";
+                    color   = "165:149:111";
+                }
+                else{
+                    bgColor = "165:149:111";
+                    color   = "242:240:234";
+                }
+                
+                /* system key */
+                if(key == "BSP" || key == "SND"){
+                    color = bgColor;
+                }
+            </script>
+            
+            <!-- simple keys style -->
+            <text redraw="no" align="center" offsetXPC="0" offsetYPC="0" widthPC="100" heightPC="100" fontSize="22">
+                <script> getStringArrayAt(keyboard, idx); </script>
+                <foregroundColor><script> print(color); </script></foregroundColor>
+                <backgroundColor><script> print(bgColor); </script></backgroundColor>
+            </text>
+            
+            <!-- control keys style -->
+                <!-- backspace -->
+                <image redraw="no" offsetXPC="0" offsetYPC="7" widthPC="100" heightPC="93">
+                    <script>
+                        if(key == "BSP"){
+                            print("%localImage%/backspace.png");
+                        }
+                        else{
+                            print("");
+                        }
+                    </script>
+                </image>
+                <!-- send message -->
+                <image redraw="no" offsetXPC="2" offsetYPC="2" widthPC="98" heightPC="98">
+                    <script>
+                        if(key == "SND"){
+                            print("%localImage%/send.png");
+                        }
+                        else{
+                            print("");
+                        }
+                    </script>
+                </image>
+        </itemDisplay>
+        
+        <!-- key handler -->
+        <onUserInput>
+            userInput = currentUserInput();
+            
+            /* place char */
+            if(userInput == "ENTR" || userInput == "enter"){
+                char = getStringArrayAt(keyboard, getQueryItemIndex());
+                if(char == "BSP" || char == "SND"){
+                    executeScript("scriptPutSystemChar");
+                    /* достал уже этот кособокий скриптинг! */
+                }
+                else{
+                    executeScript("scriptPutChar");
+                }
+            }
+            
+            /* backspace */
+            if(userInput == "video_stop"){
+                executeScript("scriptBackspace");
+            }
+        </onUserInput>
+
+        
+        <!-- system progress -->
+	<idleImage> image/POPUP_LOADING_01.png </idleImage>
+	<idleImage> image/POPUP_LOADING_02.png </idleImage>
+	<idleImage> image/POPUP_LOADING_03.png </idleImage>
+	<idleImage> image/POPUP_LOADING_04.png </idleImage>
+	<idleImage> image/POPUP_LOADING_05.png </idleImage>
+	<idleImage> image/POPUP_LOADING_06.png </idleImage>
+	<idleImage> image/POPUP_LOADING_07.png </idleImage>
+	<idleImage> image/POPUP_LOADING_08.png </idleImage>
+    </mediaDisplay>
+    
+    <!-- ^user scripts -->
+        <scriptBackspace>
+            i = 0;
+            if(inputCodeCount &gt; 0){
+                inputCodeCount   -= 1;
+                inputCodeBuffer  = deleteStringArrayAt(inputCodeBuffer, inputCodeCount);
+                inputCode = "";
+                while(i &lt; inputCodeCount){
+                    inputCode += getStringArrayAt(inputCodeBuffer, i);
+                    i += 1;
+                }
+            }
+            redrawDisplay();
+        </scriptBackspace>
+        
+        <scriptPutChar>
+            inputCode          += char;
+            inputCodeCount     += 1;
+            inputCodeBuffer    = pushBackStringArray(inputCodeBuffer, char);
+        </scriptPutChar>
+        
+        <scriptPutSystemChar>
+            char = getStringArrayAt(keyboard, getQueryItemIndex());
+            if(char == "BSP"){
+                executeScript("scriptBackspace");
+            }
+            if(char == "SND"){
+                /* executeScript("scriptSend"); */
+                showIdle();
+                url = "http://127.0.0.1/?page=rss_smsb&amp;lev=2&amp;vrfy=" + urlEncode(inputCode);
+                doModalRss(url);
+            }
+        </scriptPutSystemChar>
+        
+    <channel>
+        <!-- to rendering process -->
+        <itemSize>
+            <script> print(keysCount); </script>
+        </itemSize>
+    </channel>
+</rss>
